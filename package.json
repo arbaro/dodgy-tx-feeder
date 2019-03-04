@@ -1,0 +1,22 @@
+{
+  "name": "miniBackend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "John Williamson",
+  "license": "AGPLv3",
+  "dependencies": {
+    "@dfuse/eosws-js": "0.12.0-beta.4",
+    "@types/dotenv": "^6.1.0",
+    "@types/mongoose": "^5.3.20",
+    "@types/node": "^11.10.4",
+    "@types/ws": "^6.0.1",
+    "demux": "^4.0.0",
+    "demux-eos": "^4.0.0",
+    "dotenv": "^6.2.0",
+    "mongoose": "^5.4.17",
+    "node-fetch": "^2.3.0",
+    "typegoose": "^5.6.0",
+    "typescript": "^3.3.3333",
+    "ws": "^6.1.4"
+  }
+}
