@@ -12,7 +12,12 @@ import { JsonRpc } from "eosjs";
 
 dotenv.config();
 
-const { NODE_ENV, PRODUCTION_CONTRACT, DEVELOPMENT_CONTRACT } = process.env;
+const {
+  NODE_ENV,
+  PRODUCTION_CONTRACT,
+  DEVELOPMENT_CONTRACT,
+  EOS_RPC
+} = process.env;
 const isDevelopment = NODE_ENV === "development";
 const contractName = isDevelopment ? DEVELOPMENT_CONTRACT : PRODUCTION_CONTRACT;
 
@@ -81,7 +86,7 @@ const main = async () => {
   );
   await mongoose.connection.dropDatabase();
 
-  const rpc = new JsonRpc("http://localhost:8888", { fetch });
+  const rpc = new JsonRpc(EOS_RPC, { fetch });
 
   const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
   const OrgModel = new Org().getModelForClass(Org);
