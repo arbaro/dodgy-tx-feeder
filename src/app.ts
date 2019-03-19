@@ -18,13 +18,16 @@ class ClaimTime extends Typegoose {
   worker: string;
 
   @prop()
-  dechours: string;
+  dechours: number;
 
   @prop()
   notes: string;
 
   @prop()
   transactionId: string;
+
+  @prop()
+  role: string;
 }
 
 class TokenTransfer extends Typegoose {
@@ -55,10 +58,13 @@ const main = async () => {
     {
       versionName: "v1",
       actionType: `${contractName}::claimtime`,
-      apply: async (payload: GenericTx<ClaimTime>) => {
+      apply: async (payload: any) => {
         try {
+          console.log(payload);
           await ClaimTimeModel.create({
-            ...payload.data
+            ...payload.data,
+            transactionId: payload.transactionId,
+            worker: payload.authorization[0].actor
           });
           console.log("Commited:", payload.data.notes);
         } catch (e) {
