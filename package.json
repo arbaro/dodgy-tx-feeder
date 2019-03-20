@@ -4,6 +4,10 @@
   "main": "index.js",
   "author": "John Williamson",
   "license": "AGPLv3",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app"
+  },
   "dependencies": {
     "@dfuse/eosws-js": "0.12.0-beta.4",
     "@types/dotenv": "^6.1.0",
