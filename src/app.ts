@@ -16,7 +16,8 @@ const {
   NODE_ENV,
   PRODUCTION_CONTRACT,
   DEVELOPMENT_CONTRACT,
-  EOS_RPC
+  EOS_RPC,
+  MONGO_URI
 } = process.env;
 const isDevelopment = NODE_ENV === "development";
 const contractName = isDevelopment ? DEVELOPMENT_CONTRACT : PRODUCTION_CONTRACT;
@@ -79,12 +80,13 @@ class TokenTransfer extends Typegoose {
 }
 
 const main = async () => {
-  mongoose.connect(
-    `mongodb://localhost/arbaro`,
-    { useNewUrlParser: true },
-    error => console.log(error || "Successfully connected to MongoDB.")
+  mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error =>
+    console.log(error || "Successfully connected to MongoDB.")
   );
-  await mongoose.connection.dropDatabase();
+
+  if (isDevelopment) {
+    await mongoose.connection.dropDatabase();
+  }
 
   const rpc = new JsonRpc(EOS_RPC, { fetch });
 
@@ -131,12 +133,11 @@ const main = async () => {
           const result = await rpc.history_get_transaction(
             payload.transactionId
           );
-          console.log(result.block_time);
           await OrgModel.create({
             ...payload.data,
             blockTime: result.block_time
           });
-          console.log(payload);
+          console.log(`Commited: ${payload.data.friendlyname}`);
         } catch (e) {
           console.warn(e);
         }
