@@ -6,6 +6,7 @@ import { GenericTx, Handler } from "./interfaces";
 import { goDemux } from "./goDemux";
 import { goDfuse } from "./goDfuse";
 import * as mongoose from "mongoose";
+import * as express from "express";
 
 const fetch = require("node-fetch");
 import { JsonRpc } from "eosjs";
@@ -88,6 +89,14 @@ const main = async () => {
     await mongoose.connection.dropDatabase();
   }
 
+  const app = express();
+  app.listen(process.env.PORT, () =>
+    console.log("Listening on port", process.env.PORT)
+  );
+
+  console.log(
+    isDevelopment ? "I am in development" : "I am in production mode"
+  );
   const rpc = new JsonRpc(EOS_RPC, { fetch });
 
   const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
