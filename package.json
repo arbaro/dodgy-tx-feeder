@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "John Williamson",
-  "license": "AGPLv3",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": "10.x"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/app"
