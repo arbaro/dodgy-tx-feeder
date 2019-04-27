@@ -11,6 +11,8 @@ import * as express from "express";
 const fetch = require("node-fetch");
 import { JsonRpc } from "eosjs";
 
+import { upsertprof } from './actions/upsertprof'
+
 dotenv.config();
 
 const {
@@ -153,7 +155,8 @@ const main = async () => {
           console.warn(e);
         }
       }
-    }
+    },
+    upsertprof(contractName)
   ];
 
   isDevelopment ? goDemux(handlers) : goDfuse(handlers);

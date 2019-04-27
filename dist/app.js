@@ -25,6 +25,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const fetch = require("node-fetch");
 const eosjs_1 = require("eosjs");
+const upsertprof_1 = require("./actions/upsertprof");
 dotenv.config();
 const { NODE_ENV, PRODUCTION_CONTRACT, DEVELOPMENT_CONTRACT, EOS_RPC, MONGO_URI } = process.env;
 const isDevelopment = NODE_ENV === "development";
@@ -144,7 +145,8 @@ const main = () => __awaiter(this, void 0, void 0, function* () {
                     console.warn(e);
                 }
             })
-        }
+        },
+        upsertprof_1.upsertprof(contractName)
     ];
     isDevelopment ? goDemux_1.goDemux(handlers) : goDfuse_1.goDfuse(handlers);
 });
