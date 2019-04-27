@@ -28,7 +28,7 @@ class ClaimTime extends Typegoose {
   worker: string;
 
   @prop()
-  dechours: number;
+  minutes: number;
 
   @prop()
   notes: string;
@@ -37,7 +37,7 @@ class ClaimTime extends Typegoose {
   transactionId: string;
 
   @prop()
-  role: string;
+  org: string;
 
   @prop()
   reward: {
@@ -46,7 +46,7 @@ class ClaimTime extends Typegoose {
   };
 
   @prop()
-  blockTime: Date;
+  blockTime: string;
 }
 
 class Org extends Typegoose {
@@ -87,6 +87,7 @@ const main = async () => {
 
   if (isDevelopment) {
     await mongoose.connection.dropDatabase();
+    console.log("Mongoose database dropped")
   }
 
   const app = express();
@@ -111,6 +112,7 @@ const main = async () => {
           const result = await rpc.history_get_transaction(
             payload.transactionId
           );
+          console.log(payload, 'was the result')
           const [
             amount,
             symbol

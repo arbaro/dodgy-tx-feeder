@@ -22,6 +22,7 @@ const typegoose_1 = require("typegoose");
 const goDemux_1 = require("./goDemux");
 const goDfuse_1 = require("./goDfuse");
 const mongoose = require("mongoose");
+const express = require("express");
 const fetch = require("node-fetch");
 const eosjs_1 = require("eosjs");
 dotenv.config();
@@ -37,7 +38,7 @@ __decorate([
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", Number)
-], ClaimTime.prototype, "dechours", void 0);
+], ClaimTime.prototype, "minutes", void 0);
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
@@ -49,14 +50,14 @@ __decorate([
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
-], ClaimTime.prototype, "role", void 0);
+], ClaimTime.prototype, "org", void 0);
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", Object)
 ], ClaimTime.prototype, "reward", void 0);
 __decorate([
     typegoose_1.prop(),
-    __metadata("design:type", Date)
+    __metadata("design:type", String)
 ], ClaimTime.prototype, "blockTime", void 0);
 class Org extends typegoose_1.Typegoose {
 }
@@ -100,7 +101,13 @@ __decorate([
 ], TokenTransfer.prototype, "memo", void 0);
 const main = () => __awaiter(this, void 0, void 0, function* () {
     mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error => console.log(error || "Successfully connected to MongoDB."));
-    yield mongoose.connection.dropDatabase();
+    if (isDevelopment) {
+        yield mongoose.connection.dropDatabase();
+        console.log("Mongoose database dropped");
+    }
+    const app = express();
+    app.listen(process.env.PORT, () => console.log("Listening on port", process.env.PORT));
+    console.log(isDevelopment ? "I am in development" : "I am in production mode");
     const rpc = new eosjs_1.JsonRpc(EOS_RPC, { fetch });
     const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
     const OrgModel = new Org().getModelForClass(Org);
@@ -111,6 +118,7 @@ const main = () => __awaiter(this, void 0, void 0, function* () {
             apply: (payload) => __awaiter(this, void 0, void 0, function* () {
                 try {
                     const result = yield rpc.history_get_transaction(payload.transactionId);
+                    console.log(payload, 'was the result');
                     const [amount, symbol] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
                     const blockTime = result.block_time;
                     const reward = { amount, symbol };

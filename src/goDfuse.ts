@@ -19,7 +19,7 @@ const convertMessageToGenericBlock = <T extends {}>(
     authorization: message.data.trace.act.authorization,
     data: message.data.trace.act.data,
     blockMeta: {
-      blockTime: new Date(message.data.block_time),
+      blockTime: message.data.block_time,
       blockHash: message.data.block_id,
       blockNum: message.data.block_num,
       transactionId: message.data.trx_id
