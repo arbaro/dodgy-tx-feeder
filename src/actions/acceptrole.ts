@@ -21,17 +21,16 @@ class Profile extends Typegoose {
   }
   
   
-
 const ProfileModel = new Profile().getModelForClass(Profile);
 
 
-export const upsertprof = (contractName: string): Handler => ({
+export const acceptrole = (contractName: string): Handler => ({
     versionName: "v1",
-    actionType: `${contractName}::upsertprof`,
-    apply: async function (payload) {
-        await ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, {
-            ...payload.data,
+    actionType: `${contractName}::acceptrole`,
+    apply: async function (payload: any) {
+        console.log('Accept role running', payload)
+        await ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, {
+            $push: { orgs: payload.data.org }
         }, { upsert: true })
-        console.log('Profile was created', payload.data.friendly)
     }
 })

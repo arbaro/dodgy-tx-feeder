@@ -18,36 +18,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const typegoose_1 = require("typegoose");
-class Profile extends typegoose_1.Typegoose {
+const app_1 = require("../app");
+class ClaimTime extends typegoose_1.Typegoose {
 }
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
-], Profile.prototype, "prof", void 0);
+], ClaimTime.prototype, "worker", void 0);
+__decorate([
+    typegoose_1.prop(),
+    __metadata("design:type", Number)
+], ClaimTime.prototype, "minutes", void 0);
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
-], Profile.prototype, "friendly", void 0);
+], ClaimTime.prototype, "notes", void 0);
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
-], Profile.prototype, "about", void 0);
+], ClaimTime.prototype, "transactionId", void 0);
 __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
-], Profile.prototype, "pic", void 0);
+], ClaimTime.prototype, "org", void 0);
 __decorate([
     typegoose_1.prop(),
-    __metadata("design:type", Array)
-], Profile.prototype, "orgs", void 0);
-const ProfileModel = new Profile().getModelForClass(Profile);
-exports.upsertprof = (contractName) => ({
+    __metadata("design:type", Object)
+], ClaimTime.prototype, "reward", void 0);
+__decorate([
+    typegoose_1.prop(),
+    __metadata("design:type", String)
+], ClaimTime.prototype, "blockTime", void 0);
+const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
+exports.claimtime = (contractName) => ({
     versionName: "v1",
-    actionType: `${contractName}::upsertprof`,
-    apply: function (payload) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, Object.assign({}, payload.data), { upsert: true });
-            console.log('Profile was created', payload.data.friendly);
-        });
-    }
+    actionType: `${contractName}::claimtime`,
+    apply: (payload) => __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield app_1.rpc.history_get_transaction(payload.transactionId);
+            console.log(payload, 'was the result');
+            const [amount, symbol] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
+            const blockTime = result.block_time;
+            const reward = { amount, symbol };
+            yield ClaimTimeModel.create(Object.assign({}, payload.data, { transactionId: payload.transactionId, worker: payload.authorization[0].actor, reward,
+                blockTime }));
+            console.log("Commited:", payload.data.notes);
+        }
+        catch (e) {
+            console.warn(`Failed commiting action ${payload.data.worker} of ${payload.data.dechours} hours to database ${e}`);
+        }
+    })
 });

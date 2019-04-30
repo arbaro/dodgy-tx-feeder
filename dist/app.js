@@ -26,40 +26,12 @@ const express = require("express");
 const fetch = require("node-fetch");
 const eosjs_1 = require("eosjs");
 const upsertprof_1 = require("./actions/upsertprof");
+const claimtime_1 = require("./actions/claimtime");
+const acceptrole_1 = require("./actions/acceptrole");
 dotenv.config();
 const { NODE_ENV, PRODUCTION_CONTRACT, DEVELOPMENT_CONTRACT, EOS_RPC, MONGO_URI } = process.env;
 const isDevelopment = NODE_ENV === "development";
 const contractName = isDevelopment ? DEVELOPMENT_CONTRACT : PRODUCTION_CONTRACT;
-class ClaimTime extends typegoose_1.Typegoose {
-}
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], ClaimTime.prototype, "worker", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", Number)
-], ClaimTime.prototype, "minutes", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], ClaimTime.prototype, "notes", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], ClaimTime.prototype, "transactionId", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], ClaimTime.prototype, "org", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", Object)
-], ClaimTime.prototype, "reward", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], ClaimTime.prototype, "blockTime", void 0);
 class Org extends typegoose_1.Typegoose {
 }
 __decorate([
@@ -82,24 +54,7 @@ __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
 ], Org.prototype, "blockTime", void 0);
-class TokenTransfer extends typegoose_1.Typegoose {
-}
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], TokenTransfer.prototype, "from", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], TokenTransfer.prototype, "to", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], TokenTransfer.prototype, "quantity", void 0);
-__decorate([
-    typegoose_1.prop(),
-    __metadata("design:type", String)
-], TokenTransfer.prototype, "memo", void 0);
+exports.rpc = new eosjs_1.JsonRpc(EOS_RPC, { fetch });
 const main = () => __awaiter(this, void 0, void 0, function* () {
     mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error => console.log(error || "Successfully connected to MongoDB."));
     if (isDevelopment) {
@@ -109,36 +64,17 @@ const main = () => __awaiter(this, void 0, void 0, function* () {
     const app = express();
     app.listen(process.env.PORT, () => console.log("Listening on port", process.env.PORT));
     console.log(isDevelopment ? "I am in development" : "I am in production mode");
-    const rpc = new eosjs_1.JsonRpc(EOS_RPC, { fetch });
-    const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
     const OrgModel = new Org().getModelForClass(Org);
     const handlers = [
+        claimtime_1.claimtime(contractName),
+        acceptrole_1.acceptrole(contractName),
         {
             versionName: "v1",
-            actionType: `${contractName}::claimtime`,
+            actionType: `${contractName}::upsertorg`,
             apply: (payload) => __awaiter(this, void 0, void 0, function* () {
                 try {
-                    const result = yield rpc.history_get_transaction(payload.transactionId);
-                    console.log(payload, 'was the result');
-                    const [amount, symbol] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
-                    const blockTime = result.block_time;
-                    const reward = { amount, symbol };
-                    yield ClaimTimeModel.create(Object.assign({}, payload.data, { transactionId: payload.transactionId, worker: payload.authorization[0].actor, reward,
-                        blockTime }));
-                    console.log("Commited:", payload.data.notes);
-                }
-                catch (e) {
-                    console.warn(`Failed commiting action ${payload.data.worker} of ${payload.data.dechours} hours to database ${e}`);
-                }
-            })
-        },
-        {
-            versionName: "v1",
-            actionType: `${contractName}::createorg`,
-            apply: (payload) => __awaiter(this, void 0, void 0, function* () {
-                try {
-                    const result = yield rpc.history_get_transaction(payload.transactionId);
-                    yield OrgModel.create(Object.assign({}, payload.data, { blockTime: result.block_time }));
+                    const result = yield exports.rpc.history_get_transaction(payload.transactionId);
+                    yield OrgModel.findOneAndUpdate({ owner: payload.data.owner }, Object.assign({}, payload.data, { blockTime: result.block_time }), { upsert: true });
                     console.log(`Commited: ${payload.data.friendlyname}`);
                 }
                 catch (e) {

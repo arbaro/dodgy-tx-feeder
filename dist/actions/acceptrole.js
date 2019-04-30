@@ -41,13 +41,15 @@ __decorate([
     __metadata("design:type", Array)
 ], Profile.prototype, "orgs", void 0);
 const ProfileModel = new Profile().getModelForClass(Profile);
-exports.upsertprof = (contractName) => ({
+exports.acceptrole = (contractName) => ({
     versionName: "v1",
-    actionType: `${contractName}::upsertprof`,
+    actionType: `${contractName}::acceptrole`,
     apply: function (payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, Object.assign({}, payload.data), { upsert: true });
-            console.log('Profile was created', payload.data.friendly);
+            console.log('Accept role running', payload);
+            yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, {
+                $push: { orgs: payload.data.org }
+            }, { upsert: true });
         });
     }
 });

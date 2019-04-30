@@ -12,6 +12,8 @@ const fetch = require("node-fetch");
 import { JsonRpc } from "eosjs";
 
 import { upsertprof } from './actions/upsertprof'
+import { claimtime } from './actions/claimtime'
+import { acceptrole } from './actions/acceptrole'
 
 dotenv.config();
 
@@ -25,31 +27,7 @@ const {
 const isDevelopment = NODE_ENV === "development";
 const contractName = isDevelopment ? DEVELOPMENT_CONTRACT : PRODUCTION_CONTRACT;
 
-class ClaimTime extends Typegoose {
-  @prop()
-  worker: string;
 
-  @prop()
-  minutes: number;
-
-  @prop()
-  notes: string;
-
-  @prop()
-  transactionId: string;
-
-  @prop()
-  org: string;
-
-  @prop()
-  reward: {
-    amount: number;
-    symbol: string;
-  };
-
-  @prop()
-  blockTime: string;
-}
 
 class Org extends Typegoose {
   @prop()
@@ -68,19 +46,9 @@ class Org extends Typegoose {
   blockTime: string;
 }
 
-class TokenTransfer extends Typegoose {
-  @prop()
-  from: string;
+ 
 
-  @prop()
-  to: string;
-
-  @prop()
-  quantity: string;
-
-  @prop()
-  memo: string;
-}
+export const rpc = new JsonRpc(EOS_RPC, { fetch });
 
 const main = async () => {
   mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error =>
@@ -100,56 +68,24 @@ const main = async () => {
   console.log(
     isDevelopment ? "I am in development" : "I am in production mode"
   );
-  const rpc = new JsonRpc(EOS_RPC, { fetch });
 
-  const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
   const OrgModel = new Org().getModelForClass(Org);
 
   const handlers: Handler[] = [
+    claimtime(contractName),
+    acceptrole(contractName),
     {
       versionName: "v1",
-      actionType: `${contractName}::claimtime`,
+      actionType: `${contractName}::upsertorg`,
       apply: async (payload: any) => {
         try {
           const result = await rpc.history_get_transaction(
             payload.transactionId
           );
-          console.log(payload, 'was the result')
-          const [
-            amount,
-            symbol
-          ] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
-          const blockTime = result.block_time;
-          const reward = { amount, symbol };
-          await ClaimTimeModel.create({
-            ...payload.data,
-            transactionId: payload.transactionId,
-            worker: payload.authorization[0].actor,
-            reward,
-            blockTime
-          });
-          console.log("Commited:", payload.data.notes);
-        } catch (e) {
-          console.warn(
-            `Failed commiting action ${payload.data.worker} of ${
-              payload.data.dechours
-            } hours to database ${e}`
-          );
-        }
-      }
-    },
-    {
-      versionName: "v1",
-      actionType: `${contractName}::createorg`,
-      apply: async (payload: any) => {
-        try {
-          const result = await rpc.history_get_transaction(
-            payload.transactionId
-          );
-          await OrgModel.create({
+          await OrgModel.findOneAndUpdate({owner: payload.data.owner},{
             ...payload.data,
             blockTime: result.block_time
-          });
+          }, { upsert: true });
           console.log(`Commited: ${payload.data.friendlyname}`);
         } catch (e) {
           console.warn(e);
