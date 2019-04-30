@@ -18,6 +18,9 @@ class Profile extends Typegoose {
   
     @prop()
     orgs?: string[];
+
+    @prop()
+    git?: string
   }
   
   

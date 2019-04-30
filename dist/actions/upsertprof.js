@@ -40,6 +40,10 @@ __decorate([
     typegoose_1.prop(),
     __metadata("design:type", Array)
 ], Profile.prototype, "orgs", void 0);
+__decorate([
+    typegoose_1.prop(),
+    __metadata("design:type", String)
+], Profile.prototype, "git", void 0);
 const ProfileModel = new Profile().getModelForClass(Profile);
 exports.upsertprof = (contractName) => ({
     versionName: "v1",
