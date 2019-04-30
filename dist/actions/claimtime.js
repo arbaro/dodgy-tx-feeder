@@ -56,13 +56,11 @@ exports.claimtime = (contractName) => ({
     apply: (payload) => __awaiter(this, void 0, void 0, function* () {
         try {
             const result = yield app_1.rpc.history_get_transaction(payload.transactionId);
-            console.log(payload, 'was the result');
             const [amount, symbol] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
             const blockTime = result.block_time;
             const reward = { amount, symbol };
             yield ClaimTimeModel.create(Object.assign({}, payload.data, { transactionId: payload.transactionId, worker: payload.authorization[0].actor, reward,
                 blockTime }));
-            console.log("Commited:", payload.data.notes);
         }
         catch (e) {
             console.warn(`Failed commiting action ${payload.data.worker} of ${payload.data.dechours} hours to database ${e}`);

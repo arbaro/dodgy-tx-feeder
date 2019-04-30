@@ -32,6 +32,5 @@ export const upsertprof = (contractName: string): Handler => ({
         await ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, {
             ...payload.data,
         }, { upsert: true })
-        console.log('Profile was created', payload.data.friendly)
     }
 })

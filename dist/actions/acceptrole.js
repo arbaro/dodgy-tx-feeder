@@ -43,13 +43,18 @@ __decorate([
 const ProfileModel = new Profile().getModelForClass(Profile);
 exports.acceptrole = (contractName) => ({
     versionName: "v1",
-    actionType: `${contractName}::acceptrole`,
+    actionType: `${contractName}::upsertrole`,
     apply: function (payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('Accept role running', payload);
-            yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, {
-                $push: { orgs: payload.data.org }
-            }, { upsert: true });
+            // Worker making a decision
+            if (payload.authorization[0].actor == payload.data.worker) {
+                if (!payload.data.active) {
+                    yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $pull: { orgs: payload.data.org } }, { upsert: true });
+                }
+                else {
+                    yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $push: { orgs: payload.data.org } }, { upsert: true });
+                }
+            }
         });
     }
 });

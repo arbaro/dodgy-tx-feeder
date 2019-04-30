@@ -40,7 +40,6 @@ export const claimtime = (contractName: string): Handler => ({
             const result = await rpc.history_get_transaction(
                 payload.transactionId
             );
-            console.log(payload, 'was the result')
             const [
                 amount,
                 symbol
@@ -54,7 +53,6 @@ export const claimtime = (contractName: string): Handler => ({
                 reward,
                 blockTime
             });
-            console.log("Commited:", payload.data.notes);
         } catch (e) {
             console.warn(
                 `Failed commiting action ${payload.data.worker} of ${
