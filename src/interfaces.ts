@@ -35,52 +35,6 @@ export interface ActionTraceInput {
   action_name: string;
 }
 
-export class Profile extends Typegoose {
-  @prop()
-  prof: string;
-
-  @prop()
-  friendly?: string;
-
-  @prop()
-  about?: string;
-
-  @prop()
-  pic?: string;
-
-  @prop()
-  orgs?: string[];
-
-  
-}
-
-export class ClaimTime extends Typegoose {
-
-  @prop({ ref: Profile })
-  prof: Ref<Profile>;
-
-  @prop()
-  minutes: number;
-
-  @prop()
-  notes: string;
-
-  @prop()
-  transactionId: string;
-
-  @prop()
-  org: string;
-
-  @prop()
-  reward: {
-    amount: number;
-    symbol: string;
-  };
-
-  @prop()
-  blockTime: string;
-}
-
 export class Org extends Typegoose {
   @prop()
   owner: string;
@@ -97,6 +51,56 @@ export class Org extends Typegoose {
   @prop()
   blockTime: string;
 }
+
+export class Profile extends Typegoose {
+  @prop({ unique: true })
+  prof: string;
+
+  @prop()
+  friendly?: string;
+
+  @prop()
+  about?: string;
+
+  @prop()
+  pic?: string;
+
+  @prop()
+  orgs?: string[];
+
+}
+
+export class ClaimTime extends Typegoose {
+
+  @prop({ ref: Profile })
+  prof: Ref<Profile>;
+
+  @prop({ ref: Org })
+  org: Ref<Org>;
+
+  // @prop()
+  // org: string;
+
+  @prop()
+  minutes: number;
+
+  @prop()
+  notes: string;
+
+  @prop()
+  transactionId: string;
+
+  @prop()
+  reward: {
+    amount: number;
+    symbol: string;
+  };
+
+  @prop()
+  blockTime: string;
+}
+
+
 
 export interface upsertroleAction {
   org: string;

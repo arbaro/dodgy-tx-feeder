@@ -12,8 +12,9 @@ import { JsonRpc } from "eosjs";
 
 import { upsertprof } from './actions/upsertprof'
 import { claimtime } from './actions/claimtime'
-import { acceptrole } from './actions/acceptrole'
 import { upsertorg } from './actions/upsertorg'
+import { upsertrole } from './actions/upsertrole'
+
 
 dotenv.config();
 
@@ -52,9 +53,9 @@ const main = async () => {
 
   const handlers: Handler[] = [
     claimtime(contractName),
-    acceptrole(contractName),
     upsertorg(contractName),
-    upsertprof(contractName)
+    upsertprof(contractName),
+    upsertrole(contractName)
   ];
 
   isDevelopment ? goDemux(handlers) : goDfuse(handlers);

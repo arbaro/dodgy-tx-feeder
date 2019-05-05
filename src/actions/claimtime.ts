@@ -1,9 +1,10 @@
-import { Handler, ClaimTime, GenericTx, claimtimeAction } from '../interfaces'
+import { Handler, ClaimTime, Profile, Org, GenericTx, claimtimeAction } from '../interfaces'
 import { rpc } from '../app';
 const wait = require('waait')
 
 
-
+const ProfileModel = new Profile().getModelForClass(Profile);
+const OrgModel = new Org().getModelForClass(Org);
 const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
 
 export const claimtime = (contractName: string): Handler => ({
@@ -21,10 +22,13 @@ export const claimtime = (contractName: string): Handler => ({
             ] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
             const blockTime = result.block_time;
             const reward = { amount, symbol };
+            const profile = await ProfileModel.findOne({ prof: payload.data.worker })
+            const org = await OrgModel.findOne({ owner: payload.data.org })
             await ClaimTimeModel.create({
                 ...payload.data,
+                prof: profile._id,
+                org: org._id,
                 transactionId: payload.blockMeta.transactionId,
-                worker: payload.authorization[0].actor,
                 reward,
                 blockTime
             });

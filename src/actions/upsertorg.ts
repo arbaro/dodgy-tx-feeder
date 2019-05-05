@@ -18,7 +18,7 @@ export const upsertorg = (contractName: string): Handler => ({
             }, { upsert: true });
             console.log(`Commited: ${payload.data.friendlyname}`);
           } catch (e) {
-            console.warn(e);
+            console.warn('Upsert org error,', e);
           }
     }
 })

@@ -16,13 +16,18 @@ exports.acceptrole = (contractName) => ({
     apply: function (payload) {
         return __awaiter(this, void 0, void 0, function* () {
             // Worker making a decision
-            if (payload.authorization[0].actor == payload.data.worker) {
-                if (!payload.data.active) {
-                    yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $pull: { orgs: payload.data.org } }, { upsert: true });
+            try {
+                if (payload.authorization[0].actor == payload.data.worker) {
+                    if (!payload.data.active) {
+                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $pull: { orgs: payload.data.org } }, { upsert: true });
+                    }
+                    else {
+                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $push: { orgs: payload.data.org } }, { upsert: true });
+                    }
                 }
-                else {
-                    yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $push: { orgs: payload.data.org } }, { upsert: true });
-                }
+            }
+            catch (e) {
+                console.log('upsert role error', e);
             }
         });
     }

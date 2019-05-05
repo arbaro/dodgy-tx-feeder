@@ -17,8 +17,8 @@ const fetch = require("node-fetch");
 const eosjs_1 = require("eosjs");
 const upsertprof_1 = require("./actions/upsertprof");
 const claimtime_1 = require("./actions/claimtime");
-const acceptrole_1 = require("./actions/acceptrole");
 const upsertorg_1 = require("./actions/upsertorg");
+const upsertrole_1 = require("./actions/upsertrole");
 dotenv.config();
 const { NODE_ENV, PRODUCTION_CONTRACT, DEVELOPMENT_CONTRACT, EOS_RPC, EOS_RPC_DEV, MONGO_URI } = process.env;
 const isDevelopment = NODE_ENV === "development";
@@ -35,9 +35,9 @@ const main = () => __awaiter(this, void 0, void 0, function* () {
     console.log(isDevelopment ? "I am in development" : "I am in production mode");
     const handlers = [
         claimtime_1.claimtime(contractName),
-        acceptrole_1.acceptrole(contractName),
         upsertorg_1.upsertorg(contractName),
-        upsertprof_1.upsertprof(contractName)
+        upsertprof_1.upsertprof(contractName),
+        upsertrole_1.upsertrole(contractName)
     ];
     isDevelopment ? goDemux_1.goDemux(handlers) : goDfuse_1.goDfuse(handlers);
 });

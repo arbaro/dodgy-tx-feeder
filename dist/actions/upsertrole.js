@@ -9,20 +9,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("../interfaces");
-const app_1 = require("../app");
-const OrgModel = new interfaces_1.Org().getModelForClass(interfaces_1.Org);
-exports.upsertorg = (contractName) => ({
+const ProfileModel = new interfaces_1.Profile().getModelForClass(interfaces_1.Profile);
+exports.upsertrole = (contractName) => ({
     versionName: "v1",
-    actionType: `${contractName}::upsertorg`,
+    actionType: `${contractName}::upsertrole`,
     apply: function (payload) {
         return __awaiter(this, void 0, void 0, function* () {
+            // Worker making a decision
             try {
-                const result = yield app_1.rpc.history_get_transaction(payload.blockMeta.transactionId);
-                yield OrgModel.findOneAndUpdate({ owner: payload.data.owner }, Object.assign({}, payload.data, { blockTime: result.block_time }), { upsert: true });
-                console.log(`Commited: ${payload.data.friendlyname}`);
+                if (payload.authorization[0].actor == payload.data.worker) {
+                    if (!payload.data.active) {
+                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $pull: { orgs: payload.data.org } }, { upsert: true });
+                    }
+                    else {
+                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $push: { orgs: payload.data.org } }, { upsert: true });
+                    }
+                }
             }
             catch (e) {
-                console.warn('Upsert org error,', e);
+                console.log('upsert role error', e);
             }
         });
     }

@@ -15,7 +15,12 @@ exports.upsertprof = (contractName) => ({
     actionType: `${contractName}::upsertprof`,
     apply: function (payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, Object.assign({}, payload.data), { upsert: true });
+            try {
+                yield ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, Object.assign({}, payload.data), { upsert: true });
+            }
+            catch (e) {
+                console.log('Failure in upsert prof', e);
+            }
         });
     }
 });
