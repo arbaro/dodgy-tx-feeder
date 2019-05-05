@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@dfuse/client@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@dfuse/client/-/client-0.2.4.tgz#e6b84f338ba4e4dbd6bd16db5340361330fa2075"
+  integrity sha512-CBizxEWIVhpuT6wnY9ifmRTNAvFGh6e1cNPVdKgud5AudfoNE+8j+dkwcaGzj7zIe7MqYr/IE7nmuJo/Giqpew==
+  dependencies:
+    debug "^4.1.0"
+
 "@dfuse/eosws-js@0.12.0-beta.4":
   version "0.12.0-beta.4"
   resolved "https://registry.yarnpkg.com/@dfuse/eosws-js/-/eosws-js-0.12.0-beta.4.tgz#96d32077d787a71fab5c5be0df8e55f1f95deba9"
@@ -1445,6 +1452,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+waait@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/waait/-/waait-1.0.4.tgz#1d177bab3175bfb56f0f832526582e0ca0b2650d"
+  integrity sha512-fMUqZH5xkzDgzw3b0CzOq7IBjIx9ig09gnpnRpRgonbPOZJWGURXWWHWt3xJa8cpxjh1WGFzRAD96V8i2C8Wmg==
 
 wrappy@1:
   version "1.0.2"

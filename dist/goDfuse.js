@@ -8,10 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const WebSocket = require("ws");
 const node_fetch_1 = require("node-fetch");
-const eosws_js_1 = require("@dfuse/eosws-js");
-const handlerToActionTrace_1 = require("./handlerToActionTrace");
+// @ts-ignore
+global.fetch = node_fetch_1.default;
+// @ts-ignore
+global.WebSocket = require("ws");
+const client_1 = require("@dfuse/client");
 const convertMessageToGenericBlock = (message) => {
     return {
         authorization: message.data.trace.act.authorization,
@@ -24,33 +26,57 @@ const convertMessageToGenericBlock = (message) => {
         }
     };
 };
-exports.goDfuse = (handlers) => __awaiter(this, void 0, void 0, function* () {
-    const socketFactory = () => {
-        return new WebSocket(`wss://${endpoint}/v1/stream?token=${apiKey}`, {
-            origin: "https://example.com"
-        });
+exports.handlerToActionTrace = (handler) => {
+    const [account, action_name] = handler.actionType.split("::");
+    return {
+        account,
+        action_name
     };
-    const endpoint = "mainnet.eos.dfuse.io";
+};
+exports.goDfuse = (handlers) => __awaiter(this, void 0, void 0, function* () {
     const apiKey = process.env.DFUSE_TOKEN;
-    const socket = eosws_js_1.createEoswsSocket(socketFactory);
-    const client = new eosws_js_1.EoswsClient({
-        socket,
-        baseUrl: `https://${endpoint}`,
-        httpClient: node_fetch_1.default
-    });
-    const connector = new eosws_js_1.EoswsConnector({ client, apiKey });
-    try {
-        yield connector.connect();
-        handlers.forEach(handler => {
-            const stream = client.getActionTraces(handlerToActionTrace_1.handlerToActionTrace(handler));
-            stream.onMessage((message) => {
-                if (message.type === eosws_js_1.InboundMessageType.ACTION_TRACE) {
-                    return handler.apply(convertMessageToGenericBlock(message));
-                }
-            });
+    const client = client_1.createDfuseClient({ apiKey, network: "mainnet" });
+    handlers.forEach(handler => {
+        const { account, action_name } = exports.handlerToActionTrace(handler);
+        client.streamActionTraces({ accounts: account, action_names: action_name }, (message) => {
+            if (message.type == client_1.InboundMessageType.ACTION_TRACE) {
+                return handler.apply(convertMessageToGenericBlock(message));
+            }
         });
-    }
-    catch (e) {
-        console.log(e);
-    }
+    });
+    // client.streamActionTraces({ accounts: "eosio.token", action_names: "transfer" }, (message) => {
+    //   if (message.type === InboundMessageType.ACTION_TRACE) {
+    //     const { from, to, quantity, memo } = message.data.trace.act.data
+    //     console.log(`Transfer [${from} -> ${to}, ${quantity}] (${memo})`)
+    //   }
+    // }).catch((error) => {
+    //   console.log("An error occurred.", error)
+    // })
+    // const socketFactory = (): any => {
+    //   return new WebSocket(`wss://${endpoint}/v1/stream?token=${apiKey}`, {
+    //     origin: "https://example.com"
+    //   });
+    // };
+    // const endpoint = "mainnet.eos.dfuse.io";
+    // const apiKey = process.env.DFUSE_TOKEN;
+    // const socket = createEoswsSocket(socketFactory);
+    // const client = new EoswsClient({
+    //   socket,
+    //   baseUrl: `https://${endpoint}`,
+    //   httpClient: fetch
+    // });
+    // const connector = new EoswsConnector({ client, apiKey });
+    // try {
+    //   await connector.connect();
+    //   handlers.forEach(handler => {
+    //     const stream = client.getActionTraces(handlerToActionTrace(handler));
+    //     stream.onMessage((message: any) => {
+    //       if (message.type === InboundMessageType.ACTION_TRACE) {
+    //         return handler.apply(convertMessageToGenericBlock(message));
+    //       }
+    //     });
+    //   });
+    // } catch (e) {
+    //   console.log(e);
+    // }
 });

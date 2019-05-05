@@ -19,6 +19,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const typegoose_1 = require("typegoose");
 const app_1 = require("../app");
+const wait = require('waait');
 class ClaimTime extends typegoose_1.Typegoose {
 }
 __decorate([
@@ -54,8 +55,10 @@ exports.claimtime = (contractName) => ({
     versionName: "v1",
     actionType: `${contractName}::claimtime`,
     apply: (payload) => __awaiter(this, void 0, void 0, function* () {
+        console.log(payload, 'received for claim time');
         try {
-            const result = yield app_1.rpc.history_get_transaction(payload.transactionId);
+            yield wait(1000);
+            const result = yield app_1.rpc.history_get_transaction(payload.blockMeta.transactionId);
             const [amount, symbol] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
             const blockTime = result.block_time;
             const reward = { amount, symbol };
@@ -63,7 +66,7 @@ exports.claimtime = (contractName) => ({
                 blockTime }));
         }
         catch (e) {
-            console.warn(`Failed commiting action ${payload.data.worker} of ${payload.data.dechours} hours to database ${e}`);
+            console.warn(`Failed commiting action ${payload.data.worker} of ${payload.data.minutes} minutes to database ${e}`);
         }
     })
 });

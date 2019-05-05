@@ -22,6 +22,7 @@ const {
   PRODUCTION_CONTRACT,
   DEVELOPMENT_CONTRACT,
   EOS_RPC,
+  EOS_RPC_DEV,
   MONGO_URI
 } = process.env;
 const isDevelopment = NODE_ENV === "development";
@@ -46,9 +47,9 @@ class Org extends Typegoose {
   blockTime: string;
 }
 
- 
 
-export const rpc = new JsonRpc(EOS_RPC, { fetch });
+
+export const rpc = new JsonRpc(isDevelopment ? EOS_RPC_DEV : EOS_RPC, { fetch });
 
 const main = async () => {
   mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error =>

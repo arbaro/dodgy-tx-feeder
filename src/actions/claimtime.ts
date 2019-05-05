@@ -2,7 +2,7 @@ import { Handler } from '../interfaces'
 
 import { prop, Typegoose } from "typegoose";
 import { rpc } from '../app';
-
+const wait = require('waait')
 
 class ClaimTime extends Typegoose {
     @prop()
@@ -36,9 +36,12 @@ export const claimtime = (contractName: string): Handler => ({
     versionName: "v1",
     actionType: `${contractName}::claimtime`,
     apply: async (payload: any) => {
+        console.log(payload, 'received for claim time')
         try {
+            await wait(1000)
+            
             const result = await rpc.history_get_transaction(
-                payload.transactionId
+                payload.blockMeta.transactionId
             );
             const [
                 amount,
@@ -56,8 +59,8 @@ export const claimtime = (contractName: string): Handler => ({
         } catch (e) {
             console.warn(
                 `Failed commiting action ${payload.data.worker} of ${
-                payload.data.dechours
-                } hours to database ${e}`
+                payload.data.minutes
+                } minutes to database ${e}`
             );
         }
     }

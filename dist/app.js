@@ -29,7 +29,7 @@ const upsertprof_1 = require("./actions/upsertprof");
 const claimtime_1 = require("./actions/claimtime");
 const acceptrole_1 = require("./actions/acceptrole");
 dotenv.config();
-const { NODE_ENV, PRODUCTION_CONTRACT, DEVELOPMENT_CONTRACT, EOS_RPC, MONGO_URI } = process.env;
+const { NODE_ENV, PRODUCTION_CONTRACT, DEVELOPMENT_CONTRACT, EOS_RPC, EOS_RPC_DEV, MONGO_URI } = process.env;
 const isDevelopment = NODE_ENV === "development";
 const contractName = isDevelopment ? DEVELOPMENT_CONTRACT : PRODUCTION_CONTRACT;
 class Org extends typegoose_1.Typegoose {
@@ -54,7 +54,7 @@ __decorate([
     typegoose_1.prop(),
     __metadata("design:type", String)
 ], Org.prototype, "blockTime", void 0);
-exports.rpc = new eosjs_1.JsonRpc(EOS_RPC, { fetch });
+exports.rpc = new eosjs_1.JsonRpc(isDevelopment ? EOS_RPC_DEV : EOS_RPC, { fetch });
 const main = () => __awaiter(this, void 0, void 0, function* () {
     mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error => console.log(error || "Successfully connected to MongoDB."));
     if (isDevelopment) {
