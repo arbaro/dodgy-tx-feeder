@@ -8,12 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const interfaces_1 = require("../interfaces");
 const app_1 = require("../app");
+const models_1 = require("../models");
 const wait = require('waait');
-const ProfileModel = new interfaces_1.Profile().getModelForClass(interfaces_1.Profile);
-const OrgModel = new interfaces_1.Org().getModelForClass(interfaces_1.Org);
-const ClaimTimeModel = new interfaces_1.ClaimTime().getModelForClass(interfaces_1.ClaimTime);
 exports.claimtime = (contractName) => ({
     versionName: "v1",
     actionType: `${contractName}::claimtime`,
@@ -24,9 +21,9 @@ exports.claimtime = (contractName) => ({
             const [amount, symbol] = result.traces[0].inline_traces[0].act.data.quantity.split(" ");
             const blockTime = result.block_time;
             const reward = { amount, symbol };
-            const profile = yield ProfileModel.findOne({ prof: payload.data.worker });
-            const org = yield OrgModel.findOne({ owner: payload.data.org });
-            yield ClaimTimeModel.create(Object.assign({}, payload.data, { prof: profile._id, org: org._id, transactionId: payload.blockMeta.transactionId, reward,
+            const profile = yield models_1.ProfileModel.findOne({ prof: payload.data.worker });
+            const org = yield models_1.OrgModel.findOne({ owner: payload.data.org });
+            yield models_1.ClaimTimeModel.create(Object.assign({}, payload.data, { prof: profile._id, org: org._id, transactionId: payload.blockMeta.transactionId, reward,
                 blockTime }));
         }
         catch (e) {

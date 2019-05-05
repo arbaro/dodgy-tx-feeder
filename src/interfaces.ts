@@ -81,9 +81,6 @@ export class ClaimTime extends Typegoose {
   @prop({ ref: Org })
   org: Ref<Org>;
 
-  // @prop()
-  // org: string;
-
   @prop()
   minutes: number;
 
@@ -102,6 +99,8 @@ export class ClaimTime extends Typegoose {
   @prop()
   blockTime: string;
 }
+
+
 
 
 

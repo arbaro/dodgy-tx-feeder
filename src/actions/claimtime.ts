@@ -1,11 +1,8 @@
-import { Handler, ClaimTime, Profile, Org, GenericTx, claimtimeAction } from '../interfaces'
+import { Handler, GenericTx, claimtimeAction } from '../interfaces'
 import { rpc } from '../app';
+import { ProfileModel, OrgModel, ClaimTimeModel } from '../models';
+
 const wait = require('waait')
-
-
-const ProfileModel = new Profile().getModelForClass(Profile);
-const OrgModel = new Org().getModelForClass(Org);
-const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
 
 export const claimtime = (contractName: string): Handler => ({
     versionName: "v1",

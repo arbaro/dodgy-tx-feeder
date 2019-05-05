@@ -1,8 +1,5 @@
-import { Handler, Profile, Org, GenericTx, upsertroleAction } from '../interfaces'
-  
-const ProfileModel = new Profile().getModelForClass(Profile);
-const OrgModel = new Org().getModelForClass(Org);
-
+import { Handler, GenericTx, upsertroleAction } from '../interfaces'
+import { ProfileModel, OrgModel } from '../models';
 
 export const upsertrole = (contractName: string): Handler => ({
     versionName: "v1",
