@@ -1,4 +1,4 @@
-import { Handler, ClaimTime, GenericTx } from '../interfaces'
+import { Handler, ClaimTime, GenericTx, claimtimeAction } from '../interfaces'
 import { rpc } from '../app';
 const wait = require('waait')
 
@@ -9,7 +9,7 @@ const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
 export const claimtime = (contractName: string): Handler => ({
     versionName: "v1",
     actionType: `${contractName}::claimtime`,
-    apply: async (payload: GenericTx<any>) => {
+    apply: async (payload: GenericTx<claimtimeAction>) => {
         try {
             await wait(1000)
             const result = await rpc.history_get_transaction(

@@ -1,4 +1,4 @@
-import { prop, Typegoose } from "typegoose";
+import { prop, Typegoose, Ref } from "typegoose";
 
 export interface Data {
   worker: string;
@@ -55,8 +55,9 @@ export class Profile extends Typegoose {
 }
 
 export class ClaimTime extends Typegoose {
-  @prop()
-  worker: string;
+
+  @prop({ ref: Profile })
+  prof: Ref<Profile>;
 
   @prop()
   minutes: number;
@@ -95,4 +96,33 @@ export class Org extends Typegoose {
 
   @prop()
   blockTime: string;
+}
+
+export interface upsertroleAction {
+  org: string;
+  worker: string;
+  payrate: string;
+  active: string;
+}
+
+export interface upsertprofAction {
+  prof: string;
+  friendly: string;
+  about: string;
+  pic: string;
+  git: string;
+}
+
+export interface upsertorgAction {
+  owner: string;
+  tokensym: string;
+  tokencon: string;
+  friendlyname: string;
+}
+
+export interface claimtimeAction {
+  worker: string;
+  org: string;
+  minutes: string;
+  notes: string;
 }

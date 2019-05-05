@@ -1,7 +1,6 @@
 import * as dotenv from "dotenv";
 
-import { prop, Typegoose, ModelType, InstanceType } from "typegoose";
-import { Org, Handler } from "./interfaces";
+import { Handler } from "./interfaces";
 
 import { goDemux } from "./goDemux";
 import { goDfuse } from "./goDfuse";
@@ -37,7 +36,7 @@ const main = async () => {
   );
 
   if (isDevelopment) {
-    await mongoose.connection.dropDatabase();
+    await mongoose.connection.dropDatabase()
     console.log("Mongoose database dropped")
   }
 

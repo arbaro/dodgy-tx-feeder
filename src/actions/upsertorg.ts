@@ -1,4 +1,4 @@
-import { Handler, Org } from '../interfaces'
+import { Handler, Org, GenericTx, upsertorgAction } from '../interfaces'
 
 import { rpc } from '../app';
 
@@ -7,7 +7,7 @@ const OrgModel = new Org().getModelForClass(Org);
 export const upsertorg = (contractName: string): Handler => ({
     versionName: "v1",
     actionType: `${contractName}::upsertorg`,
-    apply: async function (payload) {
+    apply: async function (payload: GenericTx<upsertorgAction>) {
         try {
             const result = await rpc.history_get_transaction(
               payload.blockMeta.transactionId
