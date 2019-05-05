@@ -65,8 +65,11 @@ export class Profile extends Typegoose {
   @prop()
   pic?: string;
 
+  @prop({ ref: Org, unique: true })
+  orgs?: Ref<Org>[];
+
   @prop()
-  orgs?: string[];
+  isOrg: boolean;
 
 }
 

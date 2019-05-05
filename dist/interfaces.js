@@ -52,9 +52,13 @@ __decorate([
     __metadata("design:type", String)
 ], Profile.prototype, "pic", void 0);
 __decorate([
-    typegoose_1.prop(),
+    typegoose_1.prop({ ref: Org, unique: true }),
     __metadata("design:type", Array)
 ], Profile.prototype, "orgs", void 0);
+__decorate([
+    typegoose_1.prop(),
+    __metadata("design:type", Boolean)
+], Profile.prototype, "isOrg", void 0);
 exports.Profile = Profile;
 class ClaimTime extends typegoose_1.Typegoose {
 }

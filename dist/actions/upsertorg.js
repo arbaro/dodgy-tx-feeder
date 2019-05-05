@@ -11,6 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("../interfaces");
 const app_1 = require("../app");
 const OrgModel = new interfaces_1.Org().getModelForClass(interfaces_1.Org);
+const ProfileModel = new interfaces_1.Profile().getModelForClass(interfaces_1.Profile);
 exports.upsertorg = (contractName) => ({
     versionName: "v1",
     actionType: `${contractName}::upsertorg`,
@@ -19,6 +20,10 @@ exports.upsertorg = (contractName) => ({
             try {
                 const result = yield app_1.rpc.history_get_transaction(payload.blockMeta.transactionId);
                 yield OrgModel.findOneAndUpdate({ owner: payload.data.owner }, Object.assign({}, payload.data, { blockTime: result.block_time }), { upsert: true });
+                yield ProfileModel.findOneAndUpdate({ prof: payload.data.owner }, {
+                    prof: payload.data.owner,
+                    isOrg: true
+                });
                 console.log(`Commited: ${payload.data.friendlyname}`);
             }
             catch (e) {

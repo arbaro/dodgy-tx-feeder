@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const interfaces_1 = require("../interfaces");
 const ProfileModel = new interfaces_1.Profile().getModelForClass(interfaces_1.Profile);
+const OrgModel = new interfaces_1.Org().getModelForClass(interfaces_1.Org);
 exports.upsertrole = (contractName) => ({
     versionName: "v1",
     actionType: `${contractName}::upsertrole`,
@@ -17,12 +18,14 @@ exports.upsertrole = (contractName) => ({
         return __awaiter(this, void 0, void 0, function* () {
             // Worker making a decision
             try {
+                // Fetch Org being referenced
+                const org = yield OrgModel.findOne({ owner: payload.data.org });
                 if (payload.authorization[0].actor == payload.data.worker) {
                     if (!payload.data.active) {
-                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $pull: { orgs: payload.data.org } }, { upsert: true });
+                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $pull: { orgs: org._id } }, { upsert: true });
                     }
                     else {
-                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $push: { orgs: payload.data.org } }, { upsert: true });
+                        yield ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $push: { orgs: org._id } }, { upsert: true });
                     }
                 }
             }
