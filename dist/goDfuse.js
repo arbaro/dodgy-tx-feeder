@@ -44,39 +44,4 @@ exports.goDfuse = (handlers) => __awaiter(this, void 0, void 0, function* () {
             }
         });
     });
-    // client.streamActionTraces({ accounts: "eosio.token", action_names: "transfer" }, (message) => {
-    //   if (message.type === InboundMessageType.ACTION_TRACE) {
-    //     const { from, to, quantity, memo } = message.data.trace.act.data
-    //     console.log(`Transfer [${from} -> ${to}, ${quantity}] (${memo})`)
-    //   }
-    // }).catch((error) => {
-    //   console.log("An error occurred.", error)
-    // })
-    // const socketFactory = (): any => {
-    //   return new WebSocket(`wss://${endpoint}/v1/stream?token=${apiKey}`, {
-    //     origin: "https://example.com"
-    //   });
-    // };
-    // const endpoint = "mainnet.eos.dfuse.io";
-    // const apiKey = process.env.DFUSE_TOKEN;
-    // const socket = createEoswsSocket(socketFactory);
-    // const client = new EoswsClient({
-    //   socket,
-    //   baseUrl: `https://${endpoint}`,
-    //   httpClient: fetch
-    // });
-    // const connector = new EoswsConnector({ client, apiKey });
-    // try {
-    //   await connector.connect();
-    //   handlers.forEach(handler => {
-    //     const stream = client.getActionTraces(handlerToActionTrace(handler));
-    //     stream.onMessage((message: any) => {
-    //       if (message.type === InboundMessageType.ACTION_TRACE) {
-    //         return handler.apply(convertMessageToGenericBlock(message));
-    //       }
-    //     });
-    //   });
-    // } catch (e) {
-    //   console.log(e);
-    // }
 });

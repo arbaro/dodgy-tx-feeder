@@ -8,10 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const interfaces_1 = require("../interfaces");
+const models_1 = require("../models");
 const app_1 = require("../app");
-const OrgModel = new interfaces_1.Org().getModelForClass(interfaces_1.Org);
-const ProfileModel = new interfaces_1.Profile().getModelForClass(interfaces_1.Profile);
 exports.upsertorg = (contractName) => ({
     versionName: "v1",
     actionType: `${contractName}::upsertorg`,
@@ -19,8 +17,8 @@ exports.upsertorg = (contractName) => ({
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield app_1.rpc.history_get_transaction(payload.blockMeta.transactionId);
-                yield OrgModel.findOneAndUpdate({ owner: payload.data.owner }, Object.assign({}, payload.data, { blockTime: result.block_time }), { upsert: true });
-                yield ProfileModel.findOneAndUpdate({ prof: payload.data.owner }, {
+                yield models_1.OrgModel.findOneAndUpdate({ owner: payload.data.owner }, Object.assign({}, payload.data, { blockTime: result.block_time }), { upsert: true });
+                yield models_1.ProfileModel.findOneAndUpdate({ prof: payload.data.owner }, {
                     prof: payload.data.owner,
                     isOrg: true
                 });

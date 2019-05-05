@@ -10,10 +10,7 @@ import * as express from "express";
 const fetch = require("node-fetch");
 import { JsonRpc } from "eosjs";
 
-import { upsertprof } from './actions/upsertprof'
-import { claimtime } from './actions/claimtime'
-import { upsertorg } from './actions/upsertorg'
-import { upsertrole } from './actions/upsertrole'
+import { claimtime, upsertprof, upsertorg, upsertrole } from './actions'
 
 
 dotenv.config();
