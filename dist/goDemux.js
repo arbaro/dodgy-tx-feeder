@@ -7,7 +7,17 @@ exports.goDemux = (handlers) => {
     const actionHandler = new myActionHandler_1.myActionHandler([
         {
             versionName: "v1",
-            updaters: handlers.map((handler) => (Object.assign({}, handler, { apply: (state, payload) => handler.apply(payload) }))),
+            updaters: handlers.map((handler) => (Object.assign({}, handler, { apply: (state, payload) => {
+                    const { transactionId, name, authorization, data } = payload;
+                    const obj = {
+                        authorization,
+                        data,
+                        blockMeta: {
+                            transactionId,
+                        }
+                    };
+                    handler.apply(obj);
+                } }))),
             effects: []
         }
     ]);

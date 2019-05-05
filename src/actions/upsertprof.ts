@@ -1,28 +1,5 @@
-import { Handler } from '../interfaces'
+import { Handler, Profile } from '../interfaces'
 
-import { prop, Typegoose } from "typegoose";
-
-
-class Profile extends Typegoose {
-    @prop()
-    prof: string;
-  
-    @prop()
-    friendly?: string;
-  
-    @prop()
-    about?: string;
-  
-    @prop()
-    pic?: string;
-  
-    @prop()
-    orgs?: string[];
-
-    @prop()
-    git?: string
-  }
-  
   
 
 const ProfileModel = new Profile().getModelForClass(Profile);
