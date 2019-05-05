@@ -10,10 +10,8 @@ export const claimtime = (contractName: string): Handler => ({
     versionName: "v1",
     actionType: `${contractName}::claimtime`,
     apply: async (payload: GenericTx<any>) => {
-        console.log(payload, 'received for claim time')
         try {
             await wait(1000)
-            
             const result = await rpc.history_get_transaction(
                 payload.blockMeta.transactionId
             );

@@ -16,7 +16,6 @@ exports.upsertorg = (contractName) => ({
     actionType: `${contractName}::upsertorg`,
     apply: function (payload) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(payload, 'is payload for upsert org');
             try {
                 const result = yield app_1.rpc.history_get_transaction(payload.blockMeta.transactionId);
                 yield OrgModel.findOneAndUpdate({ owner: payload.data.owner }, Object.assign({}, payload.data, { blockTime: result.block_time }), { upsert: true });

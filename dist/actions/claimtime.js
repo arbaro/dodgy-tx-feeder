@@ -16,7 +16,6 @@ exports.claimtime = (contractName) => ({
     versionName: "v1",
     actionType: `${contractName}::claimtime`,
     apply: (payload) => __awaiter(this, void 0, void 0, function* () {
-        console.log(payload, 'received for claim time');
         try {
             yield wait(1000);
             const result = yield app_1.rpc.history_get_transaction(payload.blockMeta.transactionId);
