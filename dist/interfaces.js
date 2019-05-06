@@ -59,6 +59,10 @@ __decorate([
     typegoose_1.prop(),
     __metadata("design:type", Boolean)
 ], Profile.prototype, "isOrg", void 0);
+__decorate([
+    typegoose_1.prop(),
+    __metadata("design:type", String)
+], Profile.prototype, "git", void 0);
 exports.Profile = Profile;
 class ClaimTime extends typegoose_1.Typegoose {
 }

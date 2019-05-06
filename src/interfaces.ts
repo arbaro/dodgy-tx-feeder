@@ -71,6 +71,9 @@ export class Profile extends Typegoose {
   @prop()
   isOrg: boolean;
 
+
+  @prop()
+  git?: string;
 }
 
 export class ClaimTime extends Typegoose {
