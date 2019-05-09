@@ -23,8 +23,10 @@ exports.claimtime = (contractName) => ({
             const reward = { amount, symbol };
             const profile = yield models_1.ProfileModel.findOne({ prof: payload.data.worker });
             const org = yield models_1.OrgModel.findOne({ owner: payload.data.org });
-            yield models_1.ClaimTimeModel.create(Object.assign({}, payload.data, { prof: profile._id, org: org._id, transactionId: payload.blockMeta.transactionId, reward,
+            const claim = yield models_1.ClaimTimeModel.create(Object.assign({}, payload.data, { prof: profile._id, org: org._id, transactionId: payload.blockMeta.transactionId, reward,
                 blockTime }));
+            console.log(profile._id, 'is the profile id');
+            yield models_1.ProfileModel.findOneAndUpdate({ prof: payload.data.worker }, { $push: { entries: claim._id } }, { upsert: true });
         }
         catch (e) {
             console.warn(`Failed commiting action ${payload.data.worker} of ${payload.data.minutes} minutes to database ${e}`);

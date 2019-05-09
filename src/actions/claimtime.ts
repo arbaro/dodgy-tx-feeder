@@ -21,7 +21,7 @@ export const claimtime = (contractName: string): Handler => ({
             const reward = { amount, symbol };
             const profile = await ProfileModel.findOne({ prof: payload.data.worker })
             const org = await OrgModel.findOne({ owner: payload.data.org })
-            await ClaimTimeModel.create({
+            const claim = await ClaimTimeModel.create({
                 ...payload.data,
                 prof: profile._id,
                 org: org._id,
@@ -29,6 +29,12 @@ export const claimtime = (contractName: string): Handler => ({
                 reward,
                 blockTime
             });
+            console.log(profile._id, 'is the profile id')
+            await ProfileModel.findOneAndUpdate(
+                {prof: payload.data.worker},
+                { $push: { entries: claim._id } },
+                { upsert: true }
+            )
         } catch (e) {
             console.warn(
                 `Failed commiting action ${payload.data.worker} of ${

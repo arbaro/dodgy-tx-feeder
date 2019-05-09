@@ -1,5 +1,6 @@
-import { Profile, Org, ClaimTime } from './interfaces'
+import { ClaimTime, Org, Profile } from './schemas'
+import * as mongoose from 'mongoose';
 
-export const ProfileModel = new Profile().getModelForClass(Profile);
-export const OrgModel = new Org().getModelForClass(Org);
-export const ClaimTimeModel = new ClaimTime().getModelForClass(ClaimTime);
+export const ProfileModel = mongoose.model('Profile', Profile)
+export const OrgModel = mongoose.model('Org', Org)
+export const ClaimTimeModel = mongoose.model('ClaimTime', ClaimTime)

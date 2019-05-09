@@ -8,15 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const interfaces_1 = require("../interfaces");
-const ProfileModel = new interfaces_1.Profile().getModelForClass(interfaces_1.Profile);
+const models_1 = require("../models");
 exports.upsertprof = (contractName) => ({
     versionName: "v1",
     actionType: `${contractName}::upsertprof`,
     apply: function (payload) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, Object.assign({}, payload.data), { upsert: true });
+                const org = yield models_1.OrgModel.findOne({ owner: payload.data.prof });
+                yield models_1.ProfileModel.findOneAndUpdate({ prof: payload.data.prof }, Object.assign({}, payload.data, { isOrg: !!org }), { upsert: true });
             }
             catch (e) {
                 console.log('Failure in upsert prof', e);

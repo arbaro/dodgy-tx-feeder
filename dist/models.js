@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const interfaces_1 = require("./interfaces");
-exports.ProfileModel = new interfaces_1.Profile().getModelForClass(interfaces_1.Profile);
-exports.OrgModel = new interfaces_1.Org().getModelForClass(interfaces_1.Org);
-exports.ClaimTimeModel = new interfaces_1.ClaimTime().getModelForClass(interfaces_1.ClaimTime);
+const schemas_1 = require("./schemas");
+const mongoose = require("mongoose");
+exports.ProfileModel = mongoose.model('Profile', schemas_1.Profile);
+exports.OrgModel = mongoose.model('Org', schemas_1.Org);
+exports.ClaimTimeModel = mongoose.model('ClaimTime', schemas_1.ClaimTime);
