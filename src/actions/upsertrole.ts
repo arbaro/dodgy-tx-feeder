@@ -16,6 +16,7 @@ export const upsertrole = (contractName: string): Handler => ({
                         { $pull: { orgs: org._id }}, 
                         { upsert: true }
                     )
+                    
                 } else {
                     await ProfileModel.findOneAndUpdate(
                         { prof: payload.data.worker }, 
