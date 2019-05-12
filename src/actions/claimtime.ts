@@ -31,7 +31,7 @@ export const claimtime = (contractName: string): Handler => ({
             });
             console.log(profile._id, 'is the profile id')
             await ProfileModel.findOneAndUpdate(
-                {prof: payload.data.worker},
+                { prof: payload.data.worker },
                 { $push: { entries: claim._id } },
                 { upsert: true }
             )

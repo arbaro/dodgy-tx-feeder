@@ -36,7 +36,6 @@ export const handlerToActionTrace = (handler: Handler): any => {
 
 export const goDfuse = async (handlers: Handler[]) => {
   const apiKey = process.env.DFUSE_TOKEN
-  const startBlock: number = Number(process.env.START_BLOCK);
   const client = createDfuseClient({ apiKey , network: "mainnet" })
 
   handlers.forEach(handler => {
@@ -45,7 +44,7 @@ export const goDfuse = async (handlers: Handler[]) => {
       if (message.type == InboundMessageType.ACTION_TRACE) {
         return handler.apply(convertMessageToGenericBlock(message))
       }
-    }, { start_block: startBlock })
+    })
   })
 
 };

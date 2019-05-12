@@ -22,6 +22,7 @@ const isDevelopment = NODE_ENV === "development";
 const contractName = isDevelopment ? DEVELOPMENT_CONTRACT : PRODUCTION_CONTRACT;
 exports.rpc = new eosjs_1.JsonRpc(isDevelopment ? EOS_RPC_DEV : EOS_RPC, { fetch });
 const main = () => __awaiter(this, void 0, void 0, function* () {
+    console.log(MONGO_URI);
     mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error => console.log(error || "Successfully connected to MongoDB."));
     if (isDevelopment) {
         yield mongoose.connection.dropDatabase();

@@ -29,6 +29,7 @@ const contractName = isDevelopment ? DEVELOPMENT_CONTRACT : PRODUCTION_CONTRACT;
 export const rpc = new JsonRpc(isDevelopment ? EOS_RPC_DEV : EOS_RPC, { fetch });
 
 const main = async () => {
+  
   mongoose.connect(MONGO_URI, { useNewUrlParser: true }, error =>
     console.log(error || "Successfully connected to MongoDB.")
   );

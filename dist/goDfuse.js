@@ -35,7 +35,6 @@ exports.handlerToActionTrace = (handler) => {
 };
 exports.goDfuse = (handlers) => __awaiter(this, void 0, void 0, function* () {
     const apiKey = process.env.DFUSE_TOKEN;
-    const startBlock = Number(process.env.START_BLOCK);
     const client = client_1.createDfuseClient({ apiKey, network: "mainnet" });
     handlers.forEach(handler => {
         const { account, action_name } = exports.handlerToActionTrace(handler);
@@ -43,6 +42,6 @@ exports.goDfuse = (handlers) => __awaiter(this, void 0, void 0, function* () {
             if (message.type == client_1.InboundMessageType.ACTION_TRACE) {
                 return handler.apply(convertMessageToGenericBlock(message));
             }
-        }, { start_block: startBlock });
+        });
     });
 });
